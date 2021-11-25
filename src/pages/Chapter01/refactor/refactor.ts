@@ -17,14 +17,18 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  *  1、增加中转数据结构.
  * 
  * */
-export function statement(invoice:IInvoicesProps,plays:any){
 
-    return renderPlainText(invoice,plays);
+export function statement(invoice:IInvoicesProps,plays:any){
+    const statementData:IInvoicesProps = {
+        customer:invoice.customer,
+        performances:invoice.performances
+    };
+    return renderPlainText(statementData,invoice,plays);
 }
 
-function renderPlainText(invoice:IInvoicesProps, plays:any) {
-  let result = `Statement for ${invoice.customer}\n`;
-  invoice.performances.map((perf) => {
+function renderPlainText(data:IInvoicesProps,invoice:IInvoicesProps, plays:any) {
+  let result = `Statement for ${data.customer}\n`;
+  data.performances.map((perf) => {
     const play = playFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;

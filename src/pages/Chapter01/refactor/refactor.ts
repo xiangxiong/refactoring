@@ -1,6 +1,5 @@
 import { IInvoicesProps, IPerformancesProps } from '../types';
 
-
 /**
  * 设想有一个戏剧演出团，演员们经常要去各种场合表演戏剧。通常客户（customer）会指定几出剧目，
  * 而剧团则根据观众(audience)人数及剧目类型来向客户收费。该团目前出演两种戏剧：悲剧(tragedy)和喜剧(comedy)
@@ -22,7 +21,7 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   }).format;
 
   invoice.performances.map((perf) => {
-    const play = plays[perf.playID];
+    const play = playFor(perf,plays);
     // add volume credits
     volumeCredits = getVolumeCredits(volumeCredits, perf, play);
     // print line for this order
@@ -33,6 +32,10 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
+}
+
+function playFor(aPerformance:IPerformancesProps,plays:any){
+    return plays[aPerformance.playID];
 }
 
 function getVolumeCredits(volumeCredits: number, perf: IPerformancesProps, play: any) {

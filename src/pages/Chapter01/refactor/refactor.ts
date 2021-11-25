@@ -25,7 +25,6 @@ export function statement(invoice: IInvoicesProps, plays: any) {
      * 重构手法: 
      *  查询取代临时变量(178).
      */
-    
     const play = playFor(perf,plays);
     volumeCredits = volumeCreditsFor(perf,plays);
     // print line for this order
@@ -39,11 +38,11 @@ export function statement(invoice: IInvoicesProps, plays: any) {
 }
 
 function volumeCreditsFor(perf:IPerformancesProps,plays:any){
-    let volumeCredits = 0;
-    volumeCredits += Math.max(perf.audience - 30, 0);
+    let result = 0;
+    result += Math.max(perf.audience - 30, 0);
     if ('comedy' === playFor(perf,plays).type)
-    volumeCredits += Math.floor(perf.audience / 5);
-    return volumeCredits;
+    result += Math.floor(perf.audience / 5);
+    return result;
 }
 
 /**

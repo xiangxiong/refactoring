@@ -16,10 +16,9 @@ export default function() {
     init();
   },[]);
 
-
   return (
     <div className={styles.normal}>
-      Refactoring. 
+      Refactoring.
     </div>
   );
 }

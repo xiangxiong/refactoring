@@ -10,7 +10,6 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  * 应用重构的手法:
  *  
  */
-
 export function statement(invoice: IInvoicesProps, plays: any) {
   let totalAmount = 0;
   let volumeCredits = 0;
@@ -30,10 +29,9 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     result += ` ${play.name}: ${format(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(play, perf);
   });
-
+  
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
-
   return result;
 }
 

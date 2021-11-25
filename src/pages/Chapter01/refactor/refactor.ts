@@ -7,18 +7,24 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  * 下次客户再请剧团表演时可以使用积分获得折扣——你可以把它看作一种提升客户忠诚度的方式.
  * 
  * 应用重构的手法:
- *  
  */
-export function statement(invoice: IInvoicesProps, plays: any) {
-  
+
+/**
+ * 重构手法:
+ *  拆分阶段(154)
+ *  提炼函数(106)
+ * */
+export function statement(invoice:IInvoicesProps,plays:any){
+    return renderPlainText(invoice,plays);
+}
+
+function renderPlainText(invoice:IInvoicesProps, plays:any) {
   let result = `Statement for ${invoice.customer}\n`;
-  
   invoice.performances.map((perf) => {
     const play = playFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
   });
-
   result += `Amount owed is ${usd(appleSauce(invoice,plays) / 100)}\n`;
   result += `You earned ${totalVolumeCredits(invoice,plays)} credits\n`;
   return result;
@@ -33,12 +39,12 @@ export function statement(invoice: IInvoicesProps, plays: any) {
  *  内联变量(123)
 */
 function appleSauce(invoice: IInvoicesProps, plays: any){
-    let totalAmount = 0;
+    let result = 0;
     invoice.performances.map((perf)=>{
       const play = playFor(perf,plays);
-      totalAmount += amountFor(play, perf);
+      result += amountFor(play, perf);
     });
-    return totalAmount;
+    return result;
 }
 
 /**

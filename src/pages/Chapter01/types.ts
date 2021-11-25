@@ -8,4 +8,5 @@ export interface IPerformancesProps{
     audience:number;
     play?:any;
     amount?:any;
+    volumeCredits?:any;
 }

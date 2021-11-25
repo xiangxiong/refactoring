@@ -28,6 +28,7 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     const result: any = Object.assign({}, aPerformance);
     result.play = playFor(result);
     result.amount = amountFor(result);
+    result.volumeCredits = volumeCreditsFor(result);
     return result;
   }
 
@@ -67,9 +68,22 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     }
     return result;
   }
+
+    /**
+   * 提炼计算观众量积分的逻辑
+   * 重构手法:
+   * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
+   * 函数应用搬移函数（198）
+   * */
+    function volumeCreditsFor(perf: IPerformancesProps) {
+        let result = 0;
+        result += Math.max(perf.audience - 30, 0);
+        if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
+        return result;
+    }
 }
 
-function renderPlainText(data: IInvoicesProps, plays: any) {
+function renderPlainText(data: IInvoicesProps) {
   let result = `Statement for ${data.customer}\n`;
   data.performances.map((perf: any) => {
     // print line for this order
@@ -106,7 +120,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   function totalVolumeCredits() {
     let result = 0;
     data.performances.map(perf => {
-      result = volumeCreditsFor(perf);
+      result = perf.volumeCredits
     });
     return result;
   }
@@ -122,17 +136,5 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
       currency: 'USD',
       minimumFractionDigits: 2,
     }).format(aNumber);
-  }
-
-  /**
-   * 提炼计算观众量积分的逻辑
-   * 重构手法:
-   * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
-   * */
-  function volumeCreditsFor(perf: IPerformancesProps) {
-    let result = 0;
-    result += Math.max(perf.audience - 30, 0);
-    if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
-    return result;
   }
 }

@@ -15,7 +15,6 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  *  提炼函数(106)
  *
  *  1、增加中转数据结构.
- *
  * */
 export function statement(invoice: IInvoicesProps, plays: any) {
   const statementData: IInvoicesProps = {
@@ -74,7 +73,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   let result = `Statement for ${data.customer}\n`;
   data.performances.map((perf: any) => {
     // print line for this order
-    result += ` ${perf.play.name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+    result += ` ${perf.play.name}: ${usd(perf.amount / 100)} (${perf.audience} seats)\n`;
   });
   result += `Amount owed is ${usd(appleSauce() / 100)}\n`;
   result += `You earned ${totalVolumeCredits()} credits\n`;
@@ -91,7 +90,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   function appleSauce() {
     let result = 0;
     data.performances.map(perf => {
-      result += amountFor(perf);
+      result += perf.amount;
     });
     return result;
   }
@@ -133,44 +132,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   function volumeCreditsFor(perf: IPerformancesProps) {
     let result = 0;
     result += Math.max(perf.audience - 30, 0);
-    if ('comedy' === playFor(perf).type) result += Math.floor(perf.audience / 5);
-    return result;
-  }
-
-  /**
-   * 重构手法:
-   * 查询取代临时变量(178).
-   * 函数应用搬移函数（198）
-   */
-  function playFor(aPerformance: IPerformancesProps) {
-    return plays[aPerformance.playID];
-  }
-
-  /**
-   * 分解 statement 函数.
-   * 重构手法:
-   * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
-   */
-  function amountFor(aPerformance: IPerformancesProps) {
-    // 重命名变量.
-    let result = 0;
-    switch (aPerformance.play.type) {
-      case 'tragedy':
-        result = 40000;
-        if (aPerformance.audience > 30) {
-          result += 1000 * (aPerformance.audience - 30);
-        }
-        break;
-      case 'comedy':
-        result = 30000;
-        if (aPerformance.audience > 20) {
-          result += 10000 + 500 * (aPerformance.audience - 20);
-        }
-        result += 300 * aPerformance.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${aPerformance.play.type}`);
-    }
+    if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
     return result;
   }
 }

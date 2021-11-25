@@ -11,25 +11,40 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  */
 export function statement(invoice: IInvoicesProps, plays: any) {
   let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
   
   invoice.performances.map((perf) => {
     const play = playFor(perf,plays);
-    volumeCredits = volumeCreditsFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(play, perf);
   });
 
   result += `Amount owed is ${usd(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
+  result += `You earned ${totalVolumeCredits(invoice,plays)} credits\n`;
   return result;
+}
+
+
+/**
+ * 重构手法:
+ *  拆分循环(227)
+ *  移动语句(223)
+ *  查询取代临时变量(178)
+ *  提炼函数（106）
+*/
+function totalVolumeCredits(invoice:IInvoicesProps,plays:any){
+    let result = 0;
+    invoice.performances.map((perf)=>{
+      result = volumeCreditsFor(perf,plays);
+    });
+    return result;
 }
 
 /**
  * 重构手法:
  * 将函数赋值给临时变量
+ * 改变函数声明(124)
  */
 function usd(aNumber:number){
     return new Intl.NumberFormat('en-US', {

@@ -17,14 +17,21 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  *  1、增加中转数据结构.
  * */
 export function statement(invoice: IInvoicesProps, plays: any) {
-  const statementData: IInvoicesProps = {
-    customer: invoice.customer,
-    performances: invoice.performances.map(enrichPerformance)
-  };
-  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-  statementData.totalAmount = appleSauce(statementData);
+  return renderPlainText(createStatementData(invoice, plays));
 
-  return renderPlainText(statementData);
+  /***
+   * 重构手法:
+   * 中转数据结构
+  */
+  function createStatementData(invoice:IInvoicesProps, plays:any) {
+    const statementData: IInvoicesProps = {
+      customer: invoice.customer,
+      performances: invoice.performances.map(enrichPerformance),
+    };
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+    statementData.totalAmount = appleSauce(statementData);
+    return statementData;
+  }
 
   function enrichPerformance(aPerformance: IPerformancesProps) {
     const result: any = Object.assign({}, aPerformance);
@@ -93,9 +100,10 @@ export function statement(invoice: IInvoicesProps, plays: any) {
    *  内联变量(123)
    */
   function totalVolumeCredits(data: IInvoicesProps) {
+    // todo: 重构成reduce 计算方式.
     let result = 0;
     data.performances.map(perf => {
-      result = perf.volumeCredits;
+      result += perf.volumeCredits;
     });
     return result;
   }
@@ -109,6 +117,7 @@ export function statement(invoice: IInvoicesProps, plays: any) {
    *  内联变量(123)
    */
   function appleSauce(data: IInvoicesProps) {
+    // todo: 重构成reduce 计算方式.
     let result = 0;
     data.performances.map(perf => {
       result += perf.amount;

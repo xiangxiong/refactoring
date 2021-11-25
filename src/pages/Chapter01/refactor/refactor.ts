@@ -18,11 +18,11 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     const play = playFor(perf,plays);
     volumeCredits = volumeCreditsFor(perf,plays);
     // print line for this order
-    result += ` ${play.name}: ${format(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
+    result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(play, perf);
   });
 
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `Amount owed is ${usd(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
 }
@@ -31,7 +31,7 @@ export function statement(invoice: IInvoicesProps, plays: any) {
  * 重构手法:
  * 将函数赋值给临时变量
  */
-function format(aNumber:number){
+function usd(aNumber:number){
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',

@@ -25,13 +25,13 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   return result;
 }
 
-
 /**
  * 重构手法:
  *  拆分循环(227)
  *  移动语句(223)
  *  查询取代临时变量(178)
- *  提炼函数（106）
+ *  提炼函数(106) 重命名.
+ *  内联变量(123)
 */
 function totalVolumeCredits(invoice:IInvoicesProps,plays:any){
     let result = 0;

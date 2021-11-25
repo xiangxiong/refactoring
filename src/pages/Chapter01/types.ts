@@ -6,5 +6,6 @@ export interface IInvoicesProps{
 export interface IPerformancesProps{
     playID:string;
     audience:number;
-    play?:any
+    play?:any;
+    amount?:any;
 }

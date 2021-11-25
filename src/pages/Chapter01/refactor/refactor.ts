@@ -23,18 +23,18 @@ export function statement(invoice:IInvoicesProps,plays:any){
         customer:invoice.customer,
         performances:invoice.performances
     };
-    return renderPlainText(statementData,invoice,plays);
+    return renderPlainText(statementData,plays);
 }
 
-function renderPlainText(data:IInvoicesProps,invoice:IInvoicesProps, plays:any) {
+function renderPlainText(data:IInvoicesProps, plays:any) {
   let result = `Statement for ${data.customer}\n`;
   data.performances.map((perf) => {
     const play = playFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
   });
-  result += `Amount owed is ${usd(appleSauce(invoice,plays) / 100)}\n`;
-  result += `You earned ${totalVolumeCredits(invoice,plays)} credits\n`;
+  result += `Amount owed is ${usd(appleSauce(data,plays) / 100)}\n`;
+  result += `You earned ${totalVolumeCredits(data,plays)} credits\n`;
   return result;
 }
 

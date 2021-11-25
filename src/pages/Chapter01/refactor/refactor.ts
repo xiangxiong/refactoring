@@ -26,18 +26,25 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   return renderPlainText(statementData, plays);
 
   function enrichPerformance(aPerformance: IPerformancesProps) {
-    const result = Object.assign({}, aPerformance);
+    const result:any = Object.assign({}, aPerformance);
+    result.play = playFor(result); 
     return result;
+  }
+
+  /**
+   * 重构手法:
+   * 函数应用搬移函数（198）
+   */
+  function playFor(aPerformance: IPerformancesProps) {
+    return plays[aPerformance.playID];
   }
 }
 
 function renderPlainText(data: IInvoicesProps, plays: any) {
-    
   let result = `Statement for ${data.customer}\n`;
-  data.performances.map(perf => {
-    const play = playFor(perf);
+  data.performances.map((perf:any) => {
     // print line for this order
-    result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
+    result += ` ${perf.play.name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
   });
   result += `Amount owed is ${usd(appleSauce() / 100)}\n`;
   result += `You earned ${totalVolumeCredits()} credits\n`;
@@ -54,8 +61,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   function appleSauce() {
     let result = 0;
     data.performances.map(perf => {
-      const play = playFor(perf);
-      result += amountFor(play, perf);
+      result += amountFor(perf);
     });
     return result;
   }
@@ -104,6 +110,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
   /**
    * 重构手法:
    * 查询取代临时变量(178).
+   * 函数应用搬移函数（198）
    */
   function playFor(aPerformance: IPerformancesProps) {
     return plays[aPerformance.playID];
@@ -114,10 +121,10 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
    * 重构手法:
    * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
    */
-  function amountFor(play: any, aPerformance: IPerformancesProps) {
+  function amountFor(aPerformance: IPerformancesProps) {
     // 重命名变量.
     let result = 0;
-    switch (play.type) {
+    switch (aPerformance.play.type) {
       case 'tragedy':
         result = 40000;
         if (aPerformance.audience > 30) {
@@ -132,7 +139,7 @@ function renderPlainText(data: IInvoicesProps, plays: any) {
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`unknown type: ${play.type}`);
+        throw new Error(`unknown type: ${aPerformance.play.type}`);
     }
     return result;
   }

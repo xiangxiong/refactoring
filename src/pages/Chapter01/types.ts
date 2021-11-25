@@ -1,8 +1,8 @@
 export interface IInvoicesProps{
     customer:string;
     performances:IPerformancesProps[];
-    totalVolumeCredits:any;
-    totalAmount:any
+    totalVolumeCredits?:any;
+    totalAmount?:any
 }
 
 export interface IPerformancesProps{

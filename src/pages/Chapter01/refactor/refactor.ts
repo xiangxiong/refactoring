@@ -19,10 +19,10 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
 export function statement(invoice: IInvoicesProps, plays: any) {
   const statementData: IInvoicesProps = {
     customer: invoice.customer,
-    performances: invoice.performances.map(enrichPerformance),
-    totalVolumeCredits: totalVolumeCredits(invoice),
-    totalAmount: appleSauce(invoice)
+    performances: invoice.performances.map(enrichPerformance)
   };
+  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+  statementData.totalAmount = appleSauce(statementData);
 
   return renderPlainText(statementData);
 
@@ -71,20 +71,20 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     return result;
   }
 
-    /**
+  /**
    * 提炼计算观众量积分的逻辑
    * 重构手法:
    * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
    * 函数应用搬移函数（198）
    * */
-    function volumeCreditsFor(perf: IPerformancesProps) {
-        let result = 0;
-        result += Math.max(perf.audience - 30, 0);
-        if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
-        return result;
-    }
+  function volumeCreditsFor(perf: IPerformancesProps) {
+    let result = 0;
+    result += Math.max(perf.audience - 30, 0);
+    if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
+    return result;
+  }
 
-      /**
+  /**
    * 重构手法:
    *  拆分循环(227)
    *  移动语句(223)
@@ -92,15 +92,15 @@ export function statement(invoice: IInvoicesProps, plays: any) {
    *  提炼函数(106)重命名.
    *  内联变量(123)
    */
-  function totalVolumeCredits(data:IInvoicesProps) {
+  function totalVolumeCredits(data: IInvoicesProps) {
     let result = 0;
     data.performances.map(perf => {
-      result = perf.volumeCredits
+      result = perf.volumeCredits;
     });
     return result;
   }
 
-   /**
+  /**
    * 重构手法:
    *  拆分循环(227)
    *  移动语句(223)
@@ -108,14 +108,13 @@ export function statement(invoice: IInvoicesProps, plays: any) {
    *  提炼函数(106)重命名.
    *  内联变量(123)
    */
-    function appleSauce(data:IInvoicesProps) {
-        let result = 0;
-        data.performances.map(perf => {
-          result += perf.amount;
-        });
-        return result;
-    }
-
+  function appleSauce(data: IInvoicesProps) {
+    let result = 0;
+    data.performances.map(perf => {
+      result += perf.amount;
+    });
+    return result;
+  }
 }
 
 function renderPlainText(data: IInvoicesProps) {
@@ -127,17 +126,17 @@ function renderPlainText(data: IInvoicesProps) {
   result += `Amount owed is ${usd(data.totalAmount / 100)}\n`;
   result += `You earned ${data.totalVolumeCredits} credits\n`;
   return result;
+}
 
-  /**
-   * 重构手法:
-   * 将函数赋值给临时变量
-   * 改变函数声明(124)
-   */
-  function usd(aNumber: number) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(aNumber);
-  }
+/**
+ * 重构手法:
+ * 将函数赋值给临时变量
+ * 改变函数声明(124)
+ */
+function usd(aNumber: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(aNumber);
 }

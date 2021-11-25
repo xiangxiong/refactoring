@@ -17,13 +17,18 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  *  1、增加中转数据结构.
  * 
  * */
-
 export function statement(invoice:IInvoicesProps,plays:any){
     const statementData:IInvoicesProps = {
         customer:invoice.customer,
-        performances:invoice.performances
+        performances:invoice.performances.map(enrichPerformance)
     };
+
     return renderPlainText(statementData,plays);
+    
+    function enrichPerformance(aPerformance:IPerformancesProps){
+        const result = Object.assign({},aPerformance);
+        return result;
+    }
 }
 
 function renderPlainText(data:IInvoicesProps, plays:any) {

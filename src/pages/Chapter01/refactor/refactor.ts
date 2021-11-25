@@ -21,7 +21,6 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   }).format;
 
   invoice.performances.map((perf) => {
-
     /**
      * 重构手法: 
      *  查询取代临时变量(178).
@@ -51,31 +50,31 @@ function getVolumeCredits(volumeCredits: number, perf: IPerformancesProps, play:
     return volumeCredits;
 }
 
-
 /**
  * 分解 statement 函数.
  * 重构手法:
- * 提炼函数（106)
+ * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
  */
-function amountFor(play: any, perf: IPerformancesProps) {
-    let thisAmount = 0;
+function amountFor(play: any, aPerformance: IPerformancesProps) {
+    // 重命名变量.
+    let result = 0;
     switch (play.type) {
         case 'tragedy':
-            thisAmount = 40000;
-            if (perf.audience > 30) {
-                thisAmount += 1000 * (perf.audience - 30);
+            result = 40000;
+            if (aPerformance.audience > 30) {
+                result += 1000 * (aPerformance.audience - 30);
             }
             break;
         case 'comedy':
-            thisAmount = 30000;
-            if (perf.audience > 20) {
-                thisAmount += 10000 + 500 * (perf.audience - 20);
+            result = 30000;
+            if (aPerformance.audience > 20) {
+                result += 10000 + 500 * (aPerformance.audience - 20);
             }
-            thisAmount += 300 * perf.audience;
+            result += 300 * aPerformance.audience;
             break;
         default:
             throw new Error(`unknown type: ${play.type}`);
     }
-    return thisAmount;
+    return result;
 }
 

@@ -13,8 +13,12 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  * 重构手法:
  *  拆分阶段(154)
  *  提炼函数(106)
+ * 
+ *  1、增加中转数据结构.
+ * 
  * */
 export function statement(invoice:IInvoicesProps,plays:any){
+
     return renderPlainText(invoice,plays);
 }
 

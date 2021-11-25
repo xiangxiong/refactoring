@@ -21,6 +21,11 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   }).format;
 
   invoice.performances.map((perf) => {
+
+    /**
+     * 重构手法: 
+     *  查询取代临时变量(178).
+     */
     const play = playFor(perf,plays);
     // add volume credits
     volumeCredits = getVolumeCredits(volumeCredits, perf, play);
@@ -28,7 +33,7 @@ export function statement(invoice: IInvoicesProps, plays: any) {
     result += ` ${play.name}: ${format(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(play, perf);
   });
-  
+
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
@@ -46,6 +51,12 @@ function getVolumeCredits(volumeCredits: number, perf: IPerformancesProps, play:
     return volumeCredits;
 }
 
+
+/**
+ * 分解 statement 函数.
+ * 重构手法:
+ * 提炼函数（106)
+ */
 function amountFor(play: any, perf: IPerformancesProps) {
     let thisAmount = 0;
     switch (play.type) {

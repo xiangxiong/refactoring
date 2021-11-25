@@ -15,10 +15,6 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   let result = `Statement for ${invoice.customer}\n`;
   
   invoice.performances.map((perf) => {
-    /**
-     * 重构手法: 
-     *  查询取代临时变量(178).
-     */
     const play = playFor(perf,plays);
     volumeCredits = volumeCreditsFor(perf,plays);
     // print line for this order
@@ -32,10 +28,8 @@ export function statement(invoice: IInvoicesProps, plays: any) {
 }
 
 /**
- * 
  * 重构手法:
  * 将函数赋值给临时变量
- * 
  */
 function format(aNumber:number){
     return new Intl.NumberFormat('en-US', {
@@ -45,6 +39,11 @@ function format(aNumber:number){
       }).format(aNumber);
 }
 
+/**
+ * 提炼计算观众量积分的逻辑
+ * 重构手法:
+ * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
+ * */
 function volumeCreditsFor(perf:IPerformancesProps,plays:any){
     let result = 0;
     result += Math.max(perf.audience - 30, 0);
@@ -54,10 +53,9 @@ function volumeCreditsFor(perf:IPerformancesProps,plays:any){
 }
 
 /**
- * 提炼计算观众量积分的逻辑
- * 重构手法:
- * 提炼函数（106) 函数的返回值永远命名成result, 提炼函数的第一步应该是命名.
- * */
+ * 重构手法: 
+ * 查询取代临时变量(178).
+ */
 function playFor(aPerformance:IPerformancesProps,plays:any){
     return plays[aPerformance.playID];
 }

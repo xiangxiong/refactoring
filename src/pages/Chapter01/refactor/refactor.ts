@@ -20,9 +20,11 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   const statementData: IInvoicesProps = {
     customer: invoice.customer,
     performances: invoice.performances.map(enrichPerformance),
+    totalVolumeCredits: totalVolumeCredits(invoice),
+    totalAmount: appleSauce(invoice)
   };
 
-  return renderPlainText(statementData, plays);
+  return renderPlainText(statementData);
 
   function enrichPerformance(aPerformance: IPerformancesProps) {
     const result: any = Object.assign({}, aPerformance);
@@ -81,6 +83,39 @@ export function statement(invoice: IInvoicesProps, plays: any) {
         if ('comedy' === perf.play.type) result += Math.floor(perf.audience / 5);
         return result;
     }
+
+      /**
+   * 重构手法:
+   *  拆分循环(227)
+   *  移动语句(223)
+   *  查询取代临时变量(178)
+   *  提炼函数(106)重命名.
+   *  内联变量(123)
+   */
+  function totalVolumeCredits(data:IInvoicesProps) {
+    let result = 0;
+    data.performances.map(perf => {
+      result = perf.volumeCredits
+    });
+    return result;
+  }
+
+   /**
+   * 重构手法:
+   *  拆分循环(227)
+   *  移动语句(223)
+   *  查询取代临时变量(178)
+   *  提炼函数(106)重命名.
+   *  内联变量(123)
+   */
+    function appleSauce(data:IInvoicesProps) {
+        let result = 0;
+        data.performances.map(perf => {
+          result += perf.amount;
+        });
+        return result;
+    }
+
 }
 
 function renderPlainText(data: IInvoicesProps) {
@@ -89,41 +124,9 @@ function renderPlainText(data: IInvoicesProps) {
     // print line for this order
     result += ` ${perf.play.name}: ${usd(perf.amount / 100)} (${perf.audience} seats)\n`;
   });
-  result += `Amount owed is ${usd(appleSauce() / 100)}\n`;
-  result += `You earned ${totalVolumeCredits()} credits\n`;
+  result += `Amount owed is ${usd(data.totalAmount / 100)}\n`;
+  result += `You earned ${data.totalVolumeCredits} credits\n`;
   return result;
-
-  /**
-   * 重构手法:
-   *  拆分循环(227)
-   *  移动语句(223)
-   *  查询取代临时变量(178)
-   *  提炼函数(106)重命名.
-   *  内联变量(123)
-   */
-  function appleSauce() {
-    let result = 0;
-    data.performances.map(perf => {
-      result += perf.amount;
-    });
-    return result;
-  }
-
-  /**
-   * 重构手法:
-   *  拆分循环(227)
-   *  移动语句(223)
-   *  查询取代临时变量(178)
-   *  提炼函数(106)重命名.
-   *  内联变量(123)
-   */
-  function totalVolumeCredits() {
-    let result = 0;
-    data.performances.map(perf => {
-      result = perf.volumeCredits
-    });
-    return result;
-  }
 
   /**
    * 重构手法:

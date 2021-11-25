@@ -1,6 +1,7 @@
 import { IInvoicesProps, IPerformancesProps } from '../types';
 
 export default function createStatementData(invoice:IInvoicesProps, plays:any) {
+
   const statementData: IInvoicesProps = {
     customer: invoice.customer,
     performances: invoice.performances.map(enrichPerformance),

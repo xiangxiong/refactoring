@@ -10,17 +10,16 @@ import { IInvoicesProps, IPerformancesProps } from '../types';
  *  
  */
 export function statement(invoice: IInvoicesProps, plays: any) {
-  let totalAmount = 0;
+  
   let result = `Statement for ${invoice.customer}\n`;
   
   invoice.performances.map((perf) => {
     const play = playFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${usd(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
-    totalAmount += amountFor(play, perf);
   });
 
-  result += `Amount owed is ${usd(totalAmount / 100)}\n`;
+  result += `Amount owed is ${usd(appleSauce(invoice,plays) / 100)}\n`;
   result += `You earned ${totalVolumeCredits(invoice,plays)} credits\n`;
   return result;
 }
@@ -30,7 +29,24 @@ export function statement(invoice: IInvoicesProps, plays: any) {
  *  拆分循环(227)
  *  移动语句(223)
  *  查询取代临时变量(178)
- *  提炼函数(106) 重命名.
+ *  提炼函数(106)重命名.
+ *  内联变量(123)
+*/
+function appleSauce(invoice: IInvoicesProps, plays: any){
+    let totalAmount = 0;
+    invoice.performances.map((perf)=>{
+      const play = playFor(perf,plays);
+      totalAmount += amountFor(play, perf);
+    });
+    return totalAmount;
+}
+
+/**
+ * 重构手法:
+ *  拆分循环(227)
+ *  移动语句(223)
+ *  查询取代临时变量(178)
+ *  提炼函数(106)重命名.
  *  内联变量(123)
 */
 function totalVolumeCredits(invoice:IInvoicesProps,plays:any){

@@ -25,9 +25,9 @@ export function statement(invoice: IInvoicesProps, plays: any) {
      * 重构手法: 
      *  查询取代临时变量(178).
      */
+    
     const play = playFor(perf,plays);
-    // add volume credits
-    volumeCredits = getVolumeCredits(volumeCredits, perf, play);
+    volumeCredits = volumeCreditsFor(perf,plays);
     // print line for this order
     result += ` ${play.name}: ${format(amountFor(play, perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(play, perf);
@@ -38,16 +38,21 @@ export function statement(invoice: IInvoicesProps, plays: any) {
   return result;
 }
 
-function playFor(aPerformance:IPerformancesProps,plays:any){
-    return plays[aPerformance.playID];
+function volumeCreditsFor(perf:IPerformancesProps,plays:any){
+    let volumeCredits = 0;
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    if ('comedy' === playFor(perf,plays).type)
+    volumeCredits += Math.floor(perf.audience / 5);
+    return volumeCredits;
 }
 
-function getVolumeCredits(volumeCredits: number, perf: IPerformancesProps, play: any) {
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
-    if ('comedy' === play.type)
-        volumeCredits += Math.floor(perf.audience / 5);
-    return volumeCredits;
+/**
+ * 提炼计算观众量积分的逻辑
+ * 重构手法:
+ * 
+ * */
+function playFor(aPerformance:IPerformancesProps,plays:any){
+    return plays[aPerformance.playID];
 }
 
 /**
